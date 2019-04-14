@@ -39,7 +39,7 @@ models/
 |---|-----|---- frozen_inference_graph.xml
 
 ```
-The above `model` directory is checked in consisting the required structure and models.
+The above `models` directory is checked in consisting the required structure and models.
 ### Pulling up the docker image
 You can pull the publicly available docker image from [dockerhub](https://hub.docker.com/r/intelaipg/openvino-model-server/)
 ```
@@ -59,3 +59,41 @@ docker run --rm -d  -v "$(pwd)"/models/:/opt/ml:Z -p 9001:9001 ie-serving-py:lat
 - `start_server.sh` script activates the python virtual environment inside the docker container.
 - `--model_name` value can be anything. NOTE: The same name should be passed in client script.
 - `ie_serving` command starts the model server which has the following parameters:
+
+Now the container should be up and running. You can view the logs using the command
+`docker logs <container_id>`
+You should be able to view something like below:
+```
+2019-04-14 11:57:05,907 - ie_serving.main - INFO - Log level set: INFO
+2019-04-14 11:57:05,907 - ie_serving.models.model - INFO - Server start loading model: first_model
+2019-04-14 11:57:06,481 - ie_serving.models.model - INFO - List of available versions for my_model model: [1]
+2019-04-14 11:57:06,481 - ie_serving.models.model - INFO - Default version for my_model model is 1
+2019-04-14 11:57:06,495 - ie_serving.server.start - INFO - Server listens on port 9001 and will be serving models: ['first_model']
+```
+
+Get the metadata for the model using the below command
+`python get_serving_meta.py --grpc_address 0.0.0.0 --grpc_port 9001 --model_name first_model --model_version 1`
+NOTE: `--model_name` should be same as mentioned while starting the container
+The output should look something like
+```
+Getting model metadata for model: first_model
+Inputs metadata:
+        Input name: image_tensor; shape: [1, 3, 300, 300]; dtype: DT_FLOAT
+Outputs metadata:
+        Output name: DetectionOutput; shape: [1, 1, 100, 7]; dtype: DT_FLOAT
+```
+NOTE: Each model in IR format defines input and output tensors in the AI graph. By default OpenVINO™ model server is using tensors names as the input and output dictionary keys. The client is passing the input values to the gRPC request and reads the results by referring to the correspondent tensor names.
+
+Therefore the name `image_tensor` and `DetectionOutput` has to be passed while making a request for inference.
+
+You can perform and inference using the following command:
+`python grpc_client_vino.py --grpc_address 0.0.0.0 --grpc_port 9001 --input_name image_tensor --output_name DetectionOutput --model_name first_model`
+You should view the output like this:
+```
+boxes, classes, scores [] [] []
+duration:160.115 ms
+```
+Et. Voila!! Detection done!!!
+
+### What we achieved?
+We just performed object detection use-case to demonstrate the power of OpenVINO serving. We exported our trained model to a format expected by OpenVINO serving, and used a client script that could request the model server for inference.

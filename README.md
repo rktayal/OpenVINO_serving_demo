@@ -74,6 +74,8 @@ You should be able to view something like below:
 ```
 
 Get the metadata for the model using the below command
+
+
 `python get_serving_meta.py --grpc_address 0.0.0.0 --grpc_port 9001 --model_name first_model --model_version 1`
 NOTE: `--model_name` should be same as mentioned while starting the container
 The output should look something like
@@ -89,6 +91,8 @@ NOTE: Each model in IR format defines input and output tensors in the AI graph. 
 Therefore the name `image_tensor` and `DetectionOutput` has to be passed while making a request for inference.
 
 You can perform and inference using the following command:
+
+
 `python grpc_client_vino.py --grpc_address 0.0.0.0 --grpc_port 9001 --input_name image_tensor --output_name DetectionOutput --model_name first_model`
 You should view the output like this:
 ```
@@ -99,3 +103,6 @@ Et. Voila!! Detection done!!!
 
 ### What we achieved?
 We just performed object detection use-case to demonstrate the power of OpenVINO serving. We exported our trained model to a format expected by OpenVINO serving, and used a client script that could request the model server for inference.
+
+### References
+https://github.com/IntelAI/OpenVINO-model-server/tree/master/example_client

@@ -1,4 +1,4 @@
-# OpenVINO_Serving_demo
+# OpenVINO_Serving_Demo
 Object detection models are some of the most sophisticated deep learning models. They’re capable of localizing and classifying objects in real time both in images and videos. But what good is a model if it cannot be used for production?
 Thanks to the intel guys, we have OpenVINO serving, that is capable of serving our models in production.
 The repo can be used as a plug and play to serve OpenVINO model (ssd_mobilenet_v2) & to get you started on OpenVINO serving.
@@ -74,9 +74,9 @@ You should be able to view something like below:
 ```
 
 Get the metadata for the model using the below command
-
-
-`python get_serving_meta.py --grpc_address 0.0.0.0 --grpc_port 9001 --model_name first_model --model_version 1`
+```
+python get_serving_meta.py --grpc_address 0.0.0.0 --grpc_port 9001 --model_name first_model --model_version 1
+```
 NOTE: `--model_name` should be same as mentioned while starting the container
 The output should look something like
 ```
@@ -91,9 +91,10 @@ NOTE: Each model in IR format defines input and output tensors in the AI graph. 
 Therefore the name `image_tensor` and `DetectionOutput` has to be passed while making a request for inference.
 
 You can perform and inference using the following command:
-
-
-`python grpc_client_vino.py --grpc_address 0.0.0.0 --grpc_port 9001 --input_name image_tensor --output_name DetectionOutput --model_name first_model`
+```
+python grpc_client_vino.py --grpc_address 0.0.0.0 --grpc_port 9001 --input_name image_tensor \
+--output_name DetectionOutput --model_name first_model
+```
 You should view the output like this:
 ```
 boxes, classes, scores [] [] []

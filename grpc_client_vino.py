@@ -55,7 +55,7 @@ stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 
 
 processing_times = np.zeros((0),int)
-img = cv2.imread('./images/Entrance_TI_10450.jpeg')
+img = cv2.imread('./images/person.jpeg')
 # because model expects the size of image 300x300
 # model specific parameters
 n, c, h, w = 1, 3, 300, 300

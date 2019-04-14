@@ -1,5 +1,7 @@
-# OpenVINO_serving_demo
-Demonstrates on how to get started on serving an OpenVINO model
+# OpenVINO_Serving_demo
+Object detection models are some of the most sophisticated deep learning models. They’re capable of localizing and classifying objects in real time both in images and videos. But what good is a model if it cannot be used for production?
+Thanks to the intel guys, we have OpenVINO serving, that is capable of serving our models in production.
+The repo can be used as a plug and play to serve OpenVINO model (ssd_mobilenet_v2) & to get you started on OpenVINO serving.
 
 ## Getting Started with OpenVINO model server
 Inference model server implementation with gRPC interface, compatible with TensorFlow serving API and OpenVINO™ as the execution backend.

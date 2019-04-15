@@ -58,6 +58,9 @@ processing_times = np.zeros((0),int)
 img = cv2.imread('./images/person.jpeg')
 # because model expects the size of image 300x300
 # model specific parameters
+# since img.shape will return (height, width, channel)
+initial_w = img.shape[1]
+initial_h = img.shape[0]
 n, c, h, w = 1, 3, 300, 300
 in_frame = cv2.resize(img, (w, h))
 in_frame = in_frame.transpose((2, 0, 1))	# change data layout from HWC to CHW
@@ -69,10 +72,26 @@ request.inputs[args['input_name']].CopyFrom(tf_contrib_util.make_tensor_proto(in
 start_time = datetime.datetime.now()
 result = stub.Predict(request, 10)
 end_time = datetime.datetime.now()
-boxes = result.outputs['detection_boxes'].float_val
-classes = result.outputs['detection_classes'].float_val
-scores = result.outputs['detection_scores'].float_val
-print ('boxes, classes, scores', boxes, classes, scores)
+output = tf_contrib_util.make_ndarray(result.outputs[args['output_name']])
+#print ('output shape ', output.shape)
+nu = np.array(output)
+print ('nu.shape', nu.shape)
+
+for obj in nu[0][0]:
+    # Draw only objects when probability more than specified threshold
+    if obj[2] > 0.2:
+        xmin = int(obj[3] * initial_w)
+        ymin = int(obj[4] * initial_h)
+        xmax = int(obj[5] * initial_w)
+        ymax = int(obj[6] * initial_h)
+        class_id = int(obj[1])
+        print('obj->info :', class_id, xmin,ymin,xmax,ymax)
+
+
+#boxes = result.outputs['detection_boxes'].float_val
+#classes = result.outputs['detection_classes'].float_val
+#scores = result.outputs['detection_scores'].float_val
+#print ('boxes, classes, scores', boxes, classes, scores)
 duration = (end_time - start_time).total_seconds() * 1000
 print ('duration:{} ms '.format(duration))
 

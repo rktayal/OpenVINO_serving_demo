@@ -52,7 +52,7 @@ After running this command, you should be able to view the image under `docker i
 ### Starting Docker container
 Once the models are ready, you can start the Docker container with the OpenVINO™ model server. To enable just a single model, you do not need any extra configuration file, so this process can be completed with just one command like below:
 ```
-docker run --rm -d  -v "$(pwd)"/models/:/opt/ml:Z -p 9001:9001 ie-serving-py:latest \
+docker run --rm -d  -v "$(pwd)"/models/:/opt/ml:z -p 9001:9001 ie-serving-py:latest \
 /ie-serving-py/start_server.sh ie_serving model --model_path /opt/ml/model1 --model_name first_model --port 9001
 ```
 - option `-v` defines how the models folder should be mounted inside the docker container.
@@ -97,10 +97,12 @@ python grpc_client_vino.py --grpc_address 0.0.0.0 --grpc_port 9001 --input_name 
 ```
 You should view the output like this:
 ```
-boxes, classes, scores [] [] []
-duration:160.115 ms
+output tensor shape(1, 1, 100, 7)
+obj->info : 1 346 95 475 458    # class_id, xmin, ymin, xmax, ymax
+obj->info : 1 146 146 348 478
+duration: 39.32 msec
 ```
-Et. Voila!! Detection done!!!
+**Et. Voila!! Detection done!!!**
 
 ### What we achieved?
 We just performed object detection use-case to demonstrate the power of OpenVINO serving. We exported our trained model to a format expected by OpenVINO serving, and used a client script that could request the model server for inference.
